@@ -29,7 +29,7 @@ class Game:
                     get_input = input().capitalize()
                     if get_input == "Y":
                         # Print list of actions
-                        choose_preturn_action(player)
+                        choose_preturn_action(player, game.player_list)
                     else:
                         action_bool = False
                 print("Current player is -", player.name, "- Roll?")

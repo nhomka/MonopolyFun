@@ -1,4 +1,4 @@
-def choose_preturn_action(player):
+def choose_preturn_action(player, player_list):
     print("Manage: Mortgages ('M'), Houses/Hotels ('H'), or Trades ('T')?")
     get_input = input().capitalize()
     if get_input == 'M':
@@ -6,6 +6,7 @@ def choose_preturn_action(player):
     elif get_input == 'H':
         manage_houses(player)
     elif get_input == 'T':
+        request_trade(player, player_list)
         return
 
 
@@ -91,7 +92,48 @@ def manage_houses(player):
 
 
 # Manage any trade with other players
-def request_trade(player):
+def request_trade(player, player_list):
+    for p in player_list:
+        print(p.name, "currently owns the following properties:\n", [i.name for i in p.get_properties_list()])
+    opponent_list = [i for i in player_list if i != player]
+    print([i.name for i in opponent_list])
+    print("Select the player with whom you would like to trade. (Enter index)")
+    get_input = int(input())
+    if 0 <= get_input < len(opponent_list):
+        opponent = opponent_list[get_input]
+        print(opponent.name, "owns the following properties.  Enter the index of the property to trade for.")
+        opp_property_list = opponent.get_properties_list()
+        print([i.name for i in opp_property_list])
+        property_input = int(input())
+        if 0 <= property_input < len(opp_property_list):
+            trading_property = opp_property_list[property_input]
+            print("Would you like to offer money ('M'), properties ('P'), or both ('B')?")
+            trade_option_input = input().capitalize()
+            trade_offer = {}
+            if trade_option_input == 'M' or trade_option_input == 'B':
+                print("How much money would you like to pay?  You have: $", player.bank)
+                money_input = int(input())
+                if money_input < player.bank:
+                    trade_offer["money"] = money_input
+            if trade_option_input == 'P' or trade_option_input == 'B':
+                print("What properties would you like to offer?  Enter a comma separated list, you have:")
+                print([i.name for i in player.get_properties_list()])
+                property_offer_input = input().split(',')
+                trade_offer["property"] = [player.get_properties_list()[int(i)] for i in property_offer_input]
+            print(opponent.name, "do you accept this trade?")
+            opp_input = input().capitalize()
+            if opp_input == 'Y':
+                opponent.owned_properties.remove(trading_property)
+                player.owned_properties.append(trading_property)
+                if "money" in trade_offer:
+                    opponent.bank += trade_offer["money"]
+                    player.bank -= trade_offer["money"]
+                if "property" in trade_offer:
+                    for p in trade_offer["property"]:
+                        opponent.owned_properties.append(p)
+                        player.owned_properties.remove(p)
+            elif opp_input == 'N':
+                print(opponent.name, "has refused the trade offer.")
     return
 
 
