@@ -3,7 +3,7 @@ import time
 import Board
 from TileActions import perform_action
 from Tile import Tile
-from PreTurnActions import manage_houses
+from PreTurnActions import choose_preturn_action
 
 
 class Game:
@@ -29,7 +29,7 @@ class Game:
                     get_input = input().capitalize()
                     if get_input == "Y":
                         # Print list of actions
-                        manage_houses(player)
+                        choose_preturn_action(player)
                     else:
                         action_bool = False
                 print("Current player is -", player.name, "- Roll?")
