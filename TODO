@@ -1,0 +1,20 @@
+Most game play is ready, but need to actually implement win/loss scenarios.
+
+Handle incorrect inputs
+
+Check for error cases
+
+Code community chest cards
+Code chance cards
+
+Handle in-jail
+Allow get out of jail free cards to be traded?
+
+Add new board types
+
+Different game modes (Distribute properties at start, set number of turns, etc.)
+
+--- Modelling ---
+add detailed tracking for each player/property (purchases/income generated/theoretical values)
+
+Create concise logging

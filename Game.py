@@ -79,11 +79,9 @@ for p in game.player_list:
 game.establish_turn_order()
 for item in game.tile_rents:
     tile = game.tile_rents[item]
-    print(item, tile.color)
     if tile.color == "orange":
         tile.owner = player1
         player1.owned_properties.append(tile)
-        print(item, tile.color, tile.owner.name, player1.owned_properties)
 for item in game.tile_rents:
     tile = game.tile_rents[item]
     if tile.color == "red":
