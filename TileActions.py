@@ -1,7 +1,9 @@
 import Transactions
+import Cards
+import Dice
 
 
-def perform_action(player, tile):
+def perform_action(player, tile, game):
     # Check if passed go this roll
     if tile.position == 0 or player.last_roll > tile.position:
         Transactions.get_paid_from_bank(player, 200)
@@ -10,7 +12,7 @@ def perform_action(player, tile):
     # Community Chest
     elif tile.position in [2, 17, 33]:
         print("Player", player.name, "has landed on Community Chest.")
-        community_chest_action(player)
+        community_chest_action(player, game)
 
     # Income Tax
     elif tile.position == 4:
@@ -20,7 +22,7 @@ def perform_action(player, tile):
     # Chance
     elif tile.position in [7, 22, 36]:
         print("Player", player.name, "has landed on Chance.")
-        chance_action(player)
+        chance_action(player, game)
 
     # Jail/Just Visiting
     elif tile.position == 10:
@@ -104,14 +106,51 @@ def perform_action(player, tile):
         return
 
 
-def community_chest_action(player):
+def community_chest_action(player, game):
+    # Implement
+    card = game.cards.draw_cc_card(game)
+    if card.action == 'AP':
+        Transactions.all_players_pay(player, card.amount, game.player_list)
+    elif card.action == 'BP':
+        Transactions.get_paid_from_bank(player, card.amount)
+    elif card.action == 'JF':
+        player.jail_passes += 1
+    elif card.action == 'M':
+        player.position = move_to_card_destination(card)
+    elif card.action == 'PA':
+        return
+    elif card.action == 'PB':
+        return
+    elif card.action == 'PH':
+        return
+    elif card.action == 'PB':
+        return
+
+    return
+
+
+def chance_action(player, game):
     # Implement
     return
 
 
-def chance_action(player):
-    # Implement
-    return
+def move_to_card_destination(card):
+    if card.destination == 'Jail':
+        return
+    elif card.destination == 'Boardwalk':
+        return
+    elif card.destination == 'Go':
+        return
+    elif card.destination == 'RR':
+        return
+    elif card.destination == 'Reading':
+        return
+    elif card.destination == 'St. Charles':
+        return
+    elif card.destination == 'Illinois':
+        return
+    elif card.destination == 'Back3':
+        return
 
 
 def jail_or_visiting_action(player):

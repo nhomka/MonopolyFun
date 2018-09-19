@@ -1,3 +1,5 @@
+import Dice
+
 class Cards:
     unused_chance_cards = []
     used_chance_cards = []
@@ -5,12 +7,13 @@ class Cards:
     used_cc_cards = []
     chance_card_dict = {}
     cc_card_dict = {}
+    edition = 0
 
-    def __init__(self, edition):
+    def __init__(self, edition=0):
         self.initialize_card_set(edition)
 
-    def initialize_card_set(self, edition):
-        if edition == 0:
+    def initialize_card_set(self):
+        if self.edition == 0:
             self.chance_card_dict = {
                 1:  self.Card('M', None, 'RR', "Advance token to the nearest Railroad and pay owner "
                                                "Twice the Rental to which he/she is otherwise entitled.\n"
@@ -32,7 +35,7 @@ class Cards:
                                                "If Railroad is UNOWNED, you may buy it from the Bank.  "
                                                "If you pass Go, collect $200."),
                 12: self.Card('M', None, 'Jail', "Go directly to jail.\n Do not pass go, do not collect $200."),
-                13: self.Card('M', 200, 'Go', "Advance to Go.  Collect $200."),
+                13: self.Card('M', None, 'Go', "Advance to Go.  Collect $200."),
                 14: self.Card('JF', None, None, "This card may be kept until needed, or sold.\n Get out of jail free."),
                 15: self.Card('M', None, 'Boardwalk', "Take a walk on the Boardwalk!\n "
                                                       "Advance token to Boardwalk.  If you pass Go, collect $200.")
@@ -50,12 +53,36 @@ class Cards:
                 9:  self.Card('BP', 10, None, "You have won second prize in a beauty contest.  Collect $10."),
                 10: self.Card('AP', 50, None, "Grand Opera Opening.\n "
                                               "Collect $50 from every player for opening night seats."),
-                11: self.Card('MP', 200, 'Go', "Advance to go.  Collect $200."),
+                11: self.Card('M', None, 'Go', "Advance to go.  Collect $200."),
                 12: self.Card('M', None, 'Jail', "Go directly to jail.\n Do not pass go, do not collect $200."),
                 13: self.Card('BP', 20, None, "Income tax refund.  Collect $20."),
                 14: self.Card('JF', None, None, "This card may be kept until needed, or sold.\n Get out of jail free."),
                 15: self.Card('BP', 100, None, "Life insurance matures, collect $100.")
             }
+
+            for item in self.chance_card_dict:
+                self.unused_chance_cards.append(item)
+
+            for item in self.cc_card_dict:
+                self.unused_cc_cards.append(item)
+
+    def draw_cc_card(self, game):
+        card_draw = Dice.draw_random_card(game.cards.unused_cc_cards)
+        card_int = game.cards.unused_cc_cards[card_draw]
+        game.cards.unused_cc_cards.remove(card_int)
+        card = game.cards.cc_card_dict[card_int]
+        if card.action != 'JF':
+            game.cards.used_cc_cards.append(card_int)
+        return card
+
+    def draw_chance_card(self, game):
+        card_draw = Dice.draw_random_card(game.cards.unused_chance_cards)
+        card_int = game.cards.unused_chance_cards[card_draw]
+        game.cards.unused_cc_cards.remove(card_int)
+        card = game.cards.chance_card_dict[card_int]
+        if card.action != 'JF':
+            game.cards.used_cc_cards.append(card_int)
+        return card
 
     class Card:
         action = None

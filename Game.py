@@ -4,6 +4,7 @@ import Board
 from TileActions import perform_action
 from Tile import Tile
 from PreTurnActions import choose_preturn_action
+import Cards
 
 
 class Game:
@@ -12,6 +13,7 @@ class Game:
     player_list = None
     edition = None
     tile_rents = None
+    cards = None
 
     def __init__(self, edition=0):
         self.player_turn = 0
@@ -44,7 +46,7 @@ class Game:
 
                     print("You rolled a -", roll, "- You are now at position:", player.position, "Name:",
                           self.board.tile_dict[player.position])
-                    perform_action(player, self.tile_rents[str(player.position)])
+                    perform_action(player, self.tile_rents[str(player.position)], game)
                 break
         self.player_turn += 1
 
@@ -62,6 +64,8 @@ class Game:
     def initialize_board(self):
         self.board.create()
         self.tile_rents = self.board.tile_rents
+        self.cards = Cards.Cards()
+        self.cards.initialize_card_set()
 
 
 player1 = Player.Player("player1")

@@ -88,3 +88,12 @@ def pay_each_player(player, amount, player_list):
         return
 
 
+def all_players_pay(player, amount, player_list):
+    for p in player_list:
+        if p != player:
+            if p.bank > amount:
+                p.bank -= amount
+                player.bank += amount
+            else:
+                # player has to make money to pay.
+                return
