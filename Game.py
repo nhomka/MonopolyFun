@@ -1,10 +1,10 @@
 from Dice import *
-import time
 import Board
 from TileActions import perform_action
 from Tile import Tile
 from PreTurnActions import choose_preturn_action
 import Cards
+from PrintStatements import PrintStatements as PS
 
 
 class Game:
@@ -20,55 +20,54 @@ class Game:
         self.player_list = []
         self.board = Board.Board(edition)
         self.tile_rents = {}
+        self.PS = None
 
     def take_turn(self):
-        print("Turn number -", self.player_turn, "-")
+        self.PS.turn_start_info(self.player_turn)
         for player in self.player_list:
             if player.turn == self.player_turn % len(self.player_list):
-                action_bool = True
-                while action_bool:
-                    print("Current player is -", player.name, "- Perform any pre-turn actions?")
-                    get_input = input().capitalize()
-                    if get_input == "Y":
-                        # Print list of actions
-                        choose_preturn_action(player, game.player_list)
-                    else:
-                        action_bool = False
-                print("Current player is -", player.name, "- Roll?")
+                self.pre_turn_actions(player)
 
-                get_input = input().capitalize()
-                if get_input == "Y":
-                    print("Rolling...")
-                    time.sleep(.5)
+                if input().capitalize() == "Y":
+                    self.PS.rolling()
                     if player.in_jail:
                         if player.turns_jailed == 3:
-                            print(player.name, "has been in jail for 3 turns and is now rolling for move.")
+                            self.PS.waited_out_jail(player.name)
+                            player.leave_jail()
                         else:
-                            print(player.name, "has been in jail for", player.turns_jailed, "turns.  Use escape card?")
+                            self.PS.turns_jailed_ask_escape(player.name, player.turns_jailed)
                             if input().capitalize() == 'Y':
-                                if player.jail_passes >= 1:
-                                    player.jail_passes -= 1
-                                    player.in_jail = False
-                                    player.turns_jailed = 0
-                                    print(player.name, "has used a get out of free card and left jail.")
-                            else:
-                                if roll_for_jail():
-                                    player.in_jail = False
-                                    player.turns_jailed = 0
-                                    print(player.name, "has rolled doubles and escaped jail.")
+                                if player.use_jail_pass():
+                                    self.PS.use_get_out_of_jail_success(player.name)
                                 else:
                                     player.turns_jailed += 1
-                                    print(player.name, "remains in jail and will not roll for move.")
+                                    self.PS.use_get_out_of_jail_failure(player.name)
+                            else:
+                                if roll_for_jail():
+                                    player.leave_jail()
+                                    self.PS.roll_for_doubles_success(player.name)
+                                else:
+                                    player.turns_jailed += 1
+                                    self.PS.roll_for_doubles_failure(player.name)
                     if not player.in_jail:
                         roll = roll_for_move()
                         player.last_roll = roll
                         player.position = (player.position + roll) % 40
-
-                        print("You rolled a -", roll, "- You are now at position:", player.position, "Name:",
-                              self.board.tile_dict[player.position])
+                        self.PS.roll_info(roll, player.position, self.board.tile_dict)
                         perform_action(player, self.tile_rents[str(player.position)], game)
                 break
         self.player_turn += 1
+
+    def pre_turn_actions(self, player):
+        action_bool = True
+        while action_bool:
+            self.PS.ask_pre_turn_action(player.name)
+            if input().capitalize() == "Y":
+                # Print list of actions
+                choose_preturn_action(player, game.player_list)
+            else:
+                action_bool = False
+        self.PS.ask_roll(player.name)
 
     def establish_turn_order(self):
         turn_list = []
@@ -86,6 +85,7 @@ class Game:
         self.tile_rents = self.board.tile_rents
         self.cards = Cards.Cards()
         self.cards.initialize_card_set()
+        self.PS = PS(True)
 
 
 player1 = Player.Player("player1")
@@ -101,21 +101,6 @@ for p in game.player_list:
     print(p.name)
 
 game.establish_turn_order()
-for item in game.tile_rents:
-    tile = game.tile_rents[item]
-    if tile.color == "orange":
-        tile.owner = player1
-        player1.owned_properties.append(tile)
-for item in game.tile_rents:
-    tile = game.tile_rents[item]
-    if tile.color == "red":
-        tile.owner = player2
-        player2.owned_properties.append(tile)
-for item in game.tile_rents:
-    tile = game.tile_rents[item]
-    if tile.color == "yellow":
-        tile.owner = player3
-        player3.owned_properties.append(tile)
 
-while game.player_turn < 20:
+while game.player_turn < 30:
     game.take_turn()

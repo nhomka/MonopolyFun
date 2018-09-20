@@ -31,6 +31,19 @@ class Player:
         self.sort_properties()
         return self.owned_properties
 
+    def use_jail_pass(self):
+        if self.jail_passes >= 1:
+            self.jail_passes -= 1
+            self.in_jail = False
+            self.turns_jailed = 0
+            return True
+        else:
+            return False
+
+    def leave_jail(self):
+        self.in_jail = False
+        self.turns_jailed = 0
+
     def get_mortgaged_properties_list(self):
         self.sort_properties()
         mortgaged_properties = [i for i in self.owned_properties if i.is_mortgaged]

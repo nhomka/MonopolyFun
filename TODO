@@ -2,12 +2,14 @@ Most game play is ready, but need to actually implement win/loss scenarios.
 
 Handle incorrect inputs
 
+Extract print statements so they can be switched on/off more easily.
+
 Check for error cases
 
-Code community chest cards
-Code chance cards
+Done - 9/20/2018 - Code community chest cards
+Done - 9/20/2018 - Code chance cards
 
-Handle in-jail
+Done - 9/19/2018 - Handle in-jail
 Allow get out of jail free cards to be traded?
 
 Add new board types

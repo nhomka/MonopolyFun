@@ -73,7 +73,7 @@ def perform_action(player, tile, game):
                     print("Player", player.name, "cannot afford to pay", tile.owner.name, "$", total_owed)
             elif len(tile.rents) == 4:
                 owned_rails = 0
-                for item in player.owned_properties:
+                for item in tile.owner.owned_properties:
                     if len(item.rents) == 4:
                         owned_rails += 1
                 if owned_rails >= 1:
@@ -88,7 +88,7 @@ def perform_action(player, tile, game):
                     print("Player", player.name, "cannot afford to pay", tile.owner.name, "$", total_owed)
             elif len(tile.rents) == 2:
                 owned_utilities = 0
-                for item in player.owned_properties:
+                for item in tile.owner.owned_properties:
                     if len(item.rents) == 2:
                         owned_utilities += 1
                 if owned_utilities >= 1:
@@ -109,6 +109,7 @@ def perform_action(player, tile, game):
 def community_chest_action(player, game):
     # Implement
     card = game.cards.draw_cc_card(game)
+    print(card.text)
     if card.action == 'AP':
         Transactions.all_players_pay(player, card.amount, game.player_list)
         print(player.name, "has been paid", card.amount, "by all players")
