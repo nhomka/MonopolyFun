@@ -91,9 +91,35 @@ def pay_each_player(player, amount, player_list):
 def all_players_pay(player, amount, player_list):
     for p in player_list:
         if p != player:
-            if p.bank > amount:
+            if p.bank >= amount:
                 p.bank -= amount
                 player.bank += amount
             else:
                 # player has to make money to pay.
                 return
+
+
+def pay_cc_house_tax(player):
+    house_count = 0
+    hotel_count = 0
+    for p in player.get_properties_list():
+        if p.houses == 5:
+            hotel_count += 1
+        else:
+            house_count += p.houses
+
+    total_owed = house_count * 40 + hotel_count * 115
+    pay_bank(player, total_owed)
+
+
+def pay_chance_house_tax(player):
+    house_count = 0
+    hotel_count = 0
+    for p in player.get_properties_list():
+        if p.houses == 5:
+            hotel_count += 1
+        else:
+            house_count += p.houses
+
+    total_owed = house_count * 25 + hotel_count * 100
+    pay_bank(player, total_owed)

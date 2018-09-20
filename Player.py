@@ -20,6 +20,7 @@ class Player:
         self.position = 0
         self.bank = 1000
         self.in_jail = False
+        self.turns_jailed = 0
         self.jail_passes = 0
         self.owned_properties = []
 

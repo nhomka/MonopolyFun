@@ -116,41 +116,70 @@ def community_chest_action(player, game):
     elif card.action == 'JF':
         player.jail_passes += 1
     elif card.action == 'M':
-        player.position = move_to_card_destination(card)
+        move_to_card_destination(card, player)
     elif card.action == 'PA':
-        return
+        Transactions.pay_each_player(player, card.amount, game.player_list)
     elif card.action == 'PB':
-        return
+        Transactions.pay_bank(player, card.amount)
     elif card.action == 'PH':
-        return
-    elif card.action == 'PB':
-        return
+        Transactions.pay_cc_house_tax(player)
 
     return
 
 
 def chance_action(player, game):
-    # Implement
+    card = game.cards.draw_chance_card(game)
+    if card.action == 'AP':
+        Transactions.all_players_pay(player, card.amount, game.player_list)
+    elif card.action == 'BP':
+        Transactions.get_paid_from_bank(player, card.amount)
+    elif card.action == 'JF':
+        player.jail_passes += 1
+    elif card.action == 'M':
+        move_to_card_destination(card, player)
+    elif card.action == 'PA':
+        Transactions.pay_each_player(player, card.amount, game.player_list)
+    elif card.action == 'PB':
+        Transactions.pay_bank(player, card.amount)
+    elif card.action == 'PH':
+        Transactions.pay_cc_house_tax(player)
+
     return
 
 
-def move_to_card_destination(card):
+def move_to_card_destination(card, player):
+    old_position = player.position
     if card.destination == 'Jail':
-        return
+        go_to_jail_action(player)
     elif card.destination == 'Boardwalk':
-        return
+        player.position = 39
     elif card.destination == 'Go':
-        return
+        player.position = 0
     elif card.destination == 'RR':
-        return
+        if player.position <= 5:
+            player.position = 5
+        elif player.position <= 15:
+            player.position = 15
+        elif player.position <= 25:
+            player.position = 25
+        elif player.position <= 35:
+            player.position = 35
+        else:
+            player.position = 5
     elif card.destination == 'Reading':
-        return
+        player.position = 5
     elif card.destination == 'St. Charles':
-        return
+        player.position = 11
     elif card.destination == 'Illinois':
-        return
+        player.position = 24
     elif card.destination == 'Back3':
-        return
+        if player.position >= 3:
+            player.position = player.position - 3
+        else:
+            player.position = player.position + 37
+    if player.position < old_position and not player.in_jail:
+        player.bank += 200
+        print(player.name, "has passed Go and collected $200.")
 
 
 def jail_or_visiting_action(player):
@@ -164,4 +193,5 @@ def jail_or_visiting_action(player):
 def go_to_jail_action(player):
     print("Player: ", player.name, "is going directly to jail.  Do not pass go, do not collect any income")
     player.position = 10
+    player.in_jail = True
     return

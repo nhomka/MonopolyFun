@@ -40,13 +40,33 @@ class Game:
                 if get_input == "Y":
                     print("Rolling...")
                     time.sleep(.5)
-                    roll = roll_for_move()
-                    player.last_roll = roll
-                    player.position = (player.position + roll) % 40
+                    if player.in_jail:
+                        if player.turns_jailed == 3:
+                            print(player.name, "has been in jail for 3 turns and is now rolling for move.")
+                        else:
+                            print(player.name, "has been in jail for", player.turns_jailed, "turns.  Use escape card?")
+                            if input().capitalize() == 'Y':
+                                if player.jail_passes >= 1:
+                                    player.jail_passes -= 1
+                                    player.in_jail = False
+                                    player.turns_jailed = 0
+                                    print(player.name, "has used a get out of free card and left jail.")
+                            else:
+                                if roll_for_jail():
+                                    player.in_jail = False
+                                    player.turns_jailed = 0
+                                    print(player.name, "has rolled doubles and escaped jail.")
+                                else:
+                                    player.turns_jailed += 1
+                                    print(player.name, "remains in jail and will not roll for move.")
+                    if not player.in_jail:
+                        roll = roll_for_move()
+                        player.last_roll = roll
+                        player.position = (player.position + roll) % 40
 
-                    print("You rolled a -", roll, "- You are now at position:", player.position, "Name:",
-                          self.board.tile_dict[player.position])
-                    perform_action(player, self.tile_rents[str(player.position)], game)
+                        print("You rolled a -", roll, "- You are now at position:", player.position, "Name:",
+                              self.board.tile_dict[player.position])
+                        perform_action(player, self.tile_rents[str(player.position)], game)
                 break
         self.player_turn += 1
 
