@@ -110,6 +110,7 @@ def pay_cc_house_tax(player):
 
     total_owed = house_count * 40 + hotel_count * 115
     pay_bank(player, total_owed)
+    print(player.name, "has paid the bank", total_owed)
 
 
 def pay_chance_house_tax(player):
@@ -123,3 +124,4 @@ def pay_chance_house_tax(player):
 
     total_owed = house_count * 25 + hotel_count * 100
     pay_bank(player, total_owed)
+    print(player.name, "has paid the bank", total_owed)

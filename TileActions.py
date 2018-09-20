@@ -111,16 +111,22 @@ def community_chest_action(player, game):
     card = game.cards.draw_cc_card(game)
     if card.action == 'AP':
         Transactions.all_players_pay(player, card.amount, game.player_list)
+        print(player.name, "has been paid", card.amount, "by all players")
     elif card.action == 'BP':
         Transactions.get_paid_from_bank(player, card.amount)
+        print(player.name, "has been paid", card.amount, "by the bank")
     elif card.action == 'JF':
         player.jail_passes += 1
+        print(player.name, "has received a Get Out Of Jail Free card")
     elif card.action == 'M':
         move_to_card_destination(card, player)
+        print(player.name, "has moved to", game.board.tile_dict[player.position])
     elif card.action == 'PA':
         Transactions.pay_each_player(player, card.amount, game.player_list)
+        print(player.name, "has paid each player", card.amount)
     elif card.action == 'PB':
         Transactions.pay_bank(player, card.amount)
+        print(player.name, "has paid the bank", card.amount)
     elif card.action == 'PH':
         Transactions.pay_cc_house_tax(player)
 
@@ -129,18 +135,25 @@ def community_chest_action(player, game):
 
 def chance_action(player, game):
     card = game.cards.draw_chance_card(game)
+    print(card.text)
     if card.action == 'AP':
         Transactions.all_players_pay(player, card.amount, game.player_list)
+        print(player.name, "has been paid", card.amount, "by all players")
     elif card.action == 'BP':
         Transactions.get_paid_from_bank(player, card.amount)
+        print(player.name, "has been paid", card.amount, "by the bank")
     elif card.action == 'JF':
         player.jail_passes += 1
+        print(player.name, "has received a Get Out Of Jail Free card")
     elif card.action == 'M':
         move_to_card_destination(card, player)
+        print(player.name, "has moved to", game.board.tile_dict[player.position])
     elif card.action == 'PA':
         Transactions.pay_each_player(player, card.amount, game.player_list)
+        print(player.name, "has paid each player", card.amount)
     elif card.action == 'PB':
         Transactions.pay_bank(player, card.amount)
+        print(player.name, "has paid the bank", card.amount)
     elif card.action == 'PH':
         Transactions.pay_cc_house_tax(player)
 

@@ -77,8 +77,8 @@ class Game:
 
         turn_list.sort(key=lambda x: x[1])
         count = 0
-        for item in turn_list:
-            item[0].turn = count
+        for l in turn_list:
+            l[0].turn = count
             count += 1
 
     def initialize_board(self):

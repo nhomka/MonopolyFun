@@ -10,7 +10,8 @@ class Cards:
     edition = 0
 
     def __init__(self, edition=0):
-        self.initialize_card_set(edition)
+        self.edition = edition
+        self.initialize_card_set()
 
     def initialize_card_set(self):
         if self.edition == 0:
