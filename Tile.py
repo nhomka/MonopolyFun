@@ -9,6 +9,7 @@ class Tile:
     position = None
     color = None
     house_cost = None
+    transaction_list = None
 
     def __init__(self, purchase_price=0, rents=None, mortgage_price=0):
         self.purchase_price = purchase_price
@@ -17,6 +18,7 @@ class Tile:
         self.houses = 0
         self.is_mortgaged = False
         self.house_cost = 0
+        self.transaction_list = []
 
     def mortgage(self):
         if not self.is_mortgaged:

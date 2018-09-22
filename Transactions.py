@@ -1,13 +1,22 @@
-def buy_property(player, tile):
+from TransactionEvent import TransactionEvent
+
+
+def buy_property(player, tile, turn):
     if not tile.owner:
         value = tile.purchase_price
         if player.bank > value:
             print("Player", player.name, "has:", player.bank, "dollars.  Proceed to buy", tile.name, "for: ",
                   value, "dollars?")
-            get_input = input().capitalize()
-            if get_input == "Y":
+            if input().capitalize() == "Y":
                 player.bank -= value
+                player.owned_properties.append(tile)
                 tile.owner = player
+                tile.transaction_list.append(TransactionEvent(tile, 'Buy Property', turn, player, "Bank", value, value))
+                print(player.name, "has purchased", tile.name, "for", value, "and now has", player.bank, "dollars.")
+            else:
+                print("Player", player.name, "has opted not to purchase", tile.name)
+        else:
+            print("Player", player.name, "does not have sufficient funds to purchase", tile.name)
 
 
 def mortgage_property(player, tile):

@@ -46,20 +46,7 @@ def perform_action(player, tile, game):
     else:
         # Buy if unowned
         if not tile.owner:
-            purchase_cost = tile.purchase_price
-            if player.bank >= purchase_cost:
-                print("Purchase", tile.name, "for:", purchase_cost, "dollars?")
-                get_input = input().capitalize()
-                if get_input == "Y":
-                    player.bank -= purchase_cost
-                    player.owned_properties.append(tile)
-                    tile.owner = player
-                    print("Player", player.name, "has purchased", tile.name, "for", purchase_cost)
-                    print("Player", player.name, "now has", player.bank, "dollars")
-                elif get_input == "N":
-                    print("Player", player.name, "has opted not to purchase", tile.name)
-            else:
-                print("Player", player.name, "does not have sufficient funds to purchase", tile.name)
+            Transactions.buy_property(player, tile, game.player_turn)
 
         # Pay rent
         elif tile.owner and tile.owner != player:
