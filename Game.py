@@ -64,7 +64,7 @@ class Game:
             self.PS.ask_pre_turn_action(player.name)
             if input().capitalize() == "Y":
                 # Print list of actions
-                choose_preturn_action(player, game.player_list)
+                choose_preturn_action(player, self.player_list, self.player_turn)
             else:
                 action_bool = False
         self.PS.ask_roll(player.name)

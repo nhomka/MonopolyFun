@@ -6,7 +6,7 @@ import Dice
 def perform_action(player, tile, game):
     # Check if passed go this roll
     if tile.position == 0 or player.last_roll > tile.position:
-        Transactions.get_paid_from_bank(player, 200)
+        Transactions.get_paid_from_bank(player, 200, game.board.tile_dict[player.position], game.player_turn)
         print("Player", player.name, "has passed Go and collected $200.")
 
     # Community Chest
@@ -16,7 +16,7 @@ def perform_action(player, tile, game):
 
     # Income Tax
     elif tile.position == 4:
-        income_tax_cost = Transactions.pay_income_tax(player)
+        income_tax_cost = Transactions.pay_income_tax(player, tile, game.player_turn)
         print("Player", player.name, "has landed on income tax and paid", income_tax_cost, "dollars.")
 
     # Chance
@@ -30,7 +30,7 @@ def perform_action(player, tile, game):
 
     # Free Parking
     elif tile.position == 20:
-        Transactions.get_paid_from_bank(player, 500)
+        Transactions.get_paid_from_bank(player, 500, game.board.tile_dict[player.position], game.player_turn)
         print("Player", player.name, "has landed on free parking and received $500.")
 
     # Go To Jail
@@ -39,7 +39,7 @@ def perform_action(player, tile, game):
 
     # Luxury Tax
     elif tile.position == 38:
-        Transactions.pay_bank(player, 75)
+        Transactions.pay_bank(player, 75, game.board.tile_dict[player.position], game.player_turn)
         print("Player", player.name, "has landed on Luxury Tax and been charged $75")
 
     # Property
@@ -50,44 +50,7 @@ def perform_action(player, tile, game):
 
         # Pay rent
         elif tile.owner and tile.owner != player:
-            if len(tile.rents) == 6:
-                total_owed = tile.rents[tile.houses]
-                if player.bank >= total_owed:
-                    player.bank -= total_owed
-                    tile.owner.bank += total_owed
-                    print("Player", player.name, "has paid", tile.owner.name, "$", total_owed)
-                else:
-                    print("Player", player.name, "cannot afford to pay", tile.owner.name, "$", total_owed)
-            elif len(tile.rents) == 4:
-                owned_rails = 0
-                for item in tile.owner.owned_properties:
-                    if len(item.rents) == 4:
-                        owned_rails += 1
-                if owned_rails >= 1:
-                    total_owed = tile.rents[owned_rails-1]
-                else:
-                    total_owed = 0
-                if player.bank >= total_owed:
-                    player.bank -= total_owed
-                    tile.owner.bank += total_owed
-                    print("Player", player.name, "has paid", tile.owner.name, "$", total_owed)
-                else:
-                    print("Player", player.name, "cannot afford to pay", tile.owner.name, "$", total_owed)
-            elif len(tile.rents) == 2:
-                owned_utilities = 0
-                for item in tile.owner.owned_properties:
-                    if len(item.rents) == 2:
-                        owned_utilities += 1
-                if owned_utilities >= 1:
-                    total_owed = tile.rents[owned_utilities-1]*player.last_roll
-                else:
-                    total_owed = 0
-                if player.bank >= total_owed:
-                    player.bank -= total_owed
-                    tile.owner.bank += total_owed
-                    print("Player", player.name, "has paid", tile.owner.name, "$", total_owed)
-                else:
-                    print("Player", player.name, "cannot afford to pay", tile.owner.name, "$", total_owed)
+            Transactions.pay_rent(player, tile, game.player_turn)
 
         # Do nothing
         return
@@ -97,26 +60,28 @@ def community_chest_action(player, game):
     # Implement
     card = game.cards.draw_cc_card(game)
     print(card.text)
+    tile = game.board.tile_dict[player.position]
+    turn = game.player_turn
     if card.action == 'AP':
-        Transactions.all_players_pay(player, card.amount, game.player_list)
+        Transactions.all_players_pay(player, card.amount, game.player_list, tile, turn)
         print(player.name, "has been paid", card.amount, "by all players")
     elif card.action == 'BP':
-        Transactions.get_paid_from_bank(player, card.amount)
+        Transactions.get_paid_from_bank(player, card.amount, tile, turn)
         print(player.name, "has been paid", card.amount, "by the bank")
     elif card.action == 'JF':
         player.jail_passes += 1
         print(player.name, "has received a Get Out Of Jail Free card")
     elif card.action == 'M':
         move_to_card_destination(card, player)
-        print(player.name, "has moved to", game.board.tile_dict[player.position])
+        print(player.name, "has moved to", tile.name)
     elif card.action == 'PA':
-        Transactions.pay_each_player(player, card.amount, game.player_list)
+        Transactions.pay_each_player(player, card.amount, game.player_list, tile, turn)
         print(player.name, "has paid each player", card.amount)
     elif card.action == 'PB':
-        Transactions.pay_bank(player, card.amount)
+        Transactions.pay_bank(player, card.amount, tile, turn)
         print(player.name, "has paid the bank", card.amount)
     elif card.action == 'PH':
-        Transactions.pay_cc_house_tax(player)
+        Transactions.pay_cc_house_tax(player, tile, turn)
 
     return
 
@@ -124,26 +89,28 @@ def community_chest_action(player, game):
 def chance_action(player, game):
     card = game.cards.draw_chance_card(game)
     print(card.text)
+    tile = game.board.tile_dict[player.position]
+    turn = game.player_turn
     if card.action == 'AP':
-        Transactions.all_players_pay(player, card.amount, game.player_list)
+        Transactions.all_players_pay(player, card.amount, game.player_list, tile, turn)
         print(player.name, "has been paid", card.amount, "by all players")
     elif card.action == 'BP':
-        Transactions.get_paid_from_bank(player, card.amount)
+        Transactions.get_paid_from_bank(player, card.amount, tile, turn)
         print(player.name, "has been paid", card.amount, "by the bank")
     elif card.action == 'JF':
         player.jail_passes += 1
         print(player.name, "has received a Get Out Of Jail Free card")
     elif card.action == 'M':
         move_to_card_destination(card, player)
-        print(player.name, "has moved to", game.board.tile_dict[player.position])
+        print(player.name, "has moved to", tile.name)
     elif card.action == 'PA':
-        Transactions.pay_each_player(player, card.amount, game.player_list)
+        Transactions.pay_each_player(player, card.amount, game.player_list, tile, turn)
         print(player.name, "has paid each player", card.amount)
     elif card.action == 'PB':
-        Transactions.pay_bank(player, card.amount)
+        Transactions.pay_bank(player, card.amount, tile, turn)
         print(player.name, "has paid the bank", card.amount)
     elif card.action == 'PH':
-        Transactions.pay_cc_house_tax(player)
+        Transactions.pay_cc_house_tax(player, tile, turn)
 
     return
 

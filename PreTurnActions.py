@@ -1,8 +1,11 @@
-def choose_preturn_action(player, player_list):
+import Transactions
+
+
+def choose_preturn_action(player, player_list, turn):
     print("Manage: Mortgages ('M'), Houses/Hotels ('H'), or Trades ('T')?")
     get_input = input().capitalize()
     if get_input == 'M':
-        manage_mortgages(player)
+        manage_mortgages(player, turn)
     elif get_input == 'H':
         manage_houses(player)
     elif get_input == 'T':
@@ -11,7 +14,7 @@ def choose_preturn_action(player, player_list):
 
 
 # Manage any mortgage related action
-def manage_mortgages(player):
+def manage_mortgages(player, turn):
     mortgaged_properties_list = player.get_mortgaged_properties_list()
     unmortgaged_properties_list = player.get_unmortgaged_properties_list()
     print("The following properties are mortgaged:")
@@ -27,7 +30,7 @@ def manage_mortgages(player):
         if 0 <= property_input < len(unmortgaged_properties_list):
             selected_property = unmortgaged_properties_list[property_input]
             selected_property.is_mortgaged = True
-            player.bank += selected_property.mortgage_price
+            Transactions.mortgage_property(player, selected_property, turn)
             print("Property:", selected_property.name, "has been mortgaged for $", selected_property.mortgage_price)
     elif get_input == "U":
         print("Which property would you like to unmortgage? (Access by index)")
@@ -36,7 +39,7 @@ def manage_mortgages(player):
         if 0 <= property_input < len(mortgaged_properties_list):
             selected_property = mortgaged_properties_list[property_input]
             selected_property.is_mortgaged = False
-            player.bank -= selected_property.mortgage_price
+            Transactions.unmortgage_property(player, selected_property, turn)
             print("Property:", selected_property.name, "has been unmortgaged for $", selected_property.mortgage_price)
     return
 

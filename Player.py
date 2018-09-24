@@ -12,7 +12,8 @@ class Player:
     in_jail = None
     jail_passes = None
     owned_properties = None
-    in_game =  None
+    in_game = None
+    transaction_list = None
 
     def __init__(self, name):
         self.name = name
@@ -24,6 +25,7 @@ class Player:
         self.jail_passes = 0
         self.owned_properties = []
         self.in_game = True
+        self.transaction_list = []
 
     def sort_properties(self):
         self.owned_properties = sorted(self.owned_properties, key=lambda x: x.color)
@@ -31,6 +33,8 @@ class Player:
     def get_properties_list(self):
         self.sort_properties()
         return self.owned_properties
+
+    def get_current_tile(self):
 
     def use_jail_pass(self):
         if self.jail_passes >= 1:
