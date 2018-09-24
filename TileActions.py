@@ -6,7 +6,7 @@ import Dice
 def perform_action(player, tile, game):
     # Check if passed go this roll
     if tile.position == 0 or player.last_roll > tile.position:
-        Transactions.get_paid_from_bank(player, 200, game.board.tile_dict[player.position], game.player_turn)
+        Transactions.get_paid_from_bank(player, 200, tile, game.player_turn)
         print("Player", player.name, "has passed Go and collected $200.")
 
     # Community Chest
@@ -30,7 +30,7 @@ def perform_action(player, tile, game):
 
     # Free Parking
     elif tile.position == 20:
-        Transactions.get_paid_from_bank(player, 500, game.board.tile_dict[player.position], game.player_turn)
+        Transactions.get_paid_from_bank(player, 500, tile, game.player_turn)
         print("Player", player.name, "has landed on free parking and received $500.")
 
     # Go To Jail
@@ -39,7 +39,7 @@ def perform_action(player, tile, game):
 
     # Luxury Tax
     elif tile.position == 38:
-        Transactions.pay_bank(player, 75, game.board.tile_dict[player.position], game.player_turn)
+        Transactions.pay_bank(player, 75, tile, game.player_turn)
         print("Player", player.name, "has landed on Luxury Tax and been charged $75")
 
     # Property
@@ -60,7 +60,7 @@ def community_chest_action(player, game):
     # Implement
     card = game.cards.draw_cc_card(game)
     print(card.text)
-    tile = game.board.tile_dict[player.position]
+    tile = game.board.tile_rents[str(player.position)]
     turn = game.player_turn
     if card.action == 'AP':
         Transactions.all_players_pay(player, card.amount, game.player_list, tile, turn)
@@ -73,7 +73,7 @@ def community_chest_action(player, game):
         print(player.name, "has received a Get Out Of Jail Free card")
     elif card.action == 'M':
         move_to_card_destination(card, player)
-        print(player.name, "has moved to", tile.name)
+        print(player.name, "has moved to", game.board.tile_dict[player.position])
     elif card.action == 'PA':
         Transactions.pay_each_player(player, card.amount, game.player_list, tile, turn)
         print(player.name, "has paid each player", card.amount)
@@ -89,7 +89,7 @@ def community_chest_action(player, game):
 def chance_action(player, game):
     card = game.cards.draw_chance_card(game)
     print(card.text)
-    tile = game.board.tile_dict[player.position]
+    tile = game.board.tile_rents[str(player.position)]
     turn = game.player_turn
     if card.action == 'AP':
         Transactions.all_players_pay(player, card.amount, game.player_list, tile, turn)
@@ -102,7 +102,7 @@ def chance_action(player, game):
         print(player.name, "has received a Get Out Of Jail Free card")
     elif card.action == 'M':
         move_to_card_destination(card, player)
-        print(player.name, "has moved to", tile.name)
+        print(player.name, "has moved to", game.board.tile_dict[player.position])
     elif card.action == 'PA':
         Transactions.pay_each_player(player, card.amount, game.player_list, tile, turn)
         print(player.name, "has paid each player", card.amount)
@@ -145,7 +145,7 @@ def move_to_card_destination(card, player):
             player.position = player.position - 3
         else:
             player.position = player.position + 37
-    if player.position < old_position and not player.in_jail:
+    if player.position < old_position and not player.in_jail and card.destination != 'Back3':
         player.bank += 200
         print(player.name, "has passed Go and collected $200.")
 
