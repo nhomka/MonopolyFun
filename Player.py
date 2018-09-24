@@ -34,8 +34,6 @@ class Player:
         self.sort_properties()
         return self.owned_properties
 
-    def get_current_tile(self):
-
     def use_jail_pass(self):
         if self.jail_passes >= 1:
             self.jail_passes -= 1
