@@ -47,6 +47,26 @@ def unmortgage_property(player, tile, turn):
             return
 
 
+def pay_double_rr_rent(player, tile, turn):
+    transaction_event = None
+    owned_rails = 0
+    for item in tile.owner.owned_properties:
+        if len(item.rents) == 4:
+            owned_rails += 1
+    if owned_rails >= 1:
+        total_owed = tile.rents[owned_rails - 1] * 2
+    else:
+        total_owed = 0
+    if player.bank >= total_owed:
+        player.bank -= total_owed
+        tile.owner.bank += total_owed
+        transaction_event = TransactionEvent(tile, 'Rent', turn, player, tile.owner, total_owed, total_owed)
+        print("Player", player.name, "has paid", tile.owner.name, "$", total_owed)
+    else:
+        print("Player", player.name, "cannot afford to pay", tile.owner.name, "$", total_owed)
+        # player has to make money to pay
+    assign_event([player, tile.owner], transaction_event)
+
 def pay_rent(player, tile, turn):
     transaction_event = None
     if len(tile.rents) == 6:
