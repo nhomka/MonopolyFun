@@ -19,7 +19,7 @@ class Player:
         self.name = name
         self.last_roll = None
         self.position = 0
-        self.bank = 1000
+        self.bank = 1500
         self.in_jail = False
         self.turns_jailed = 0
         self.jail_passes = 0

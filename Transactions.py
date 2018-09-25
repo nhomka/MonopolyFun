@@ -67,10 +67,16 @@ def pay_double_rr_rent(player, tile, turn):
         # player has to make money to pay
     assign_event([player, tile.owner], transaction_event)
 
+
 def pay_rent(player, tile, turn):
     transaction_event = None
+    if tile.is_mortgaged:
+        print(tile.name, "is mortgaged,", player.name, "owes no rent")
+        return
     if len(tile.rents) == 6:
         total_owed = tile.rents[tile.houses]
+        if tile.houses == 0 and player.verify_set_owned(tile):
+            total_owed *= 2
         if player.bank >= total_owed:
             player.bank -= total_owed
             tile.owner.bank += total_owed
