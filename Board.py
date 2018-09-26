@@ -127,6 +127,10 @@ class Board:
                 elif pair.position < 40 and pair.rents and len(pair.rents) == 6:
                     pair.color = "dark blue"
                     pair.house_cost = 200
+                elif len(pair.rents) == 4:
+                    pair.color = "black"
+                elif len(pair.rents) == 2:
+                    pair.color = "white"
 
         else:
             tile_dict = None

@@ -9,8 +9,11 @@ def perform_action(player, tile, game):
         Transactions.get_paid_from_bank(player, 200, tile, game.player_turn)
         print("Player", player.name, "has passed Go and collected $200.")
 
+    if player.position == 0:
+        print("Player", player.name, "has landed on Go")
+
     # Community Chest
-    if player.position in [2, 17, 33]:
+    elif player.position in [2, 17, 33]:
         print("Player", player.name, "has landed on Community Chest.")
         community_chest_action(player, game)
 
