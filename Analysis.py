@@ -7,5 +7,5 @@
 # which properties should be mortgaged first if necessary
 # friendliness factor, try to incorporate the unspoken social contracts found in tabletop boardgames to this
 #   rigidly defined and structured game.
-#
+# effect of Free Parking having value, I'd expect it has a major impact if it has a reward.
 #

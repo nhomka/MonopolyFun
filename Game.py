@@ -14,6 +14,7 @@ class Game:
     edition = None
     tile_rents = None
     cards = None
+    actual_turn = None
 
     def __init__(self, edition=0):
         self.player_turn = 0
@@ -21,11 +22,12 @@ class Game:
         self.board = Board.Board(edition)
         self.tile_rents = {}
         self.PS = None
+        self.actual_turn = 0
 
     def take_turn(self):
         self.PS.turn_start_info(self.player_turn)
         for player in self.player_list:
-            if player.turn == self.player_turn % len(self.player_list):
+            if player.turn == self.player_turn % len(self.player_list) and player.in_game:
                 self.pre_turn_actions(player)
 
                 if input().capitalize() == "Y":
@@ -55,7 +57,8 @@ class Game:
                         player.position = (player.position + roll) % 40
                         self.PS.roll_info(roll, player.position, self.board.tile_dict)
                         perform_action(player, self.tile_rents[str(player.position)], game)
-                break
+                    self.actual_turn += 1
+
         self.player_turn += 1
 
     def pre_turn_actions(self, player):
@@ -80,6 +83,21 @@ class Game:
             l[0].turn = count
             count += 1
 
+    def check_game_active(self):
+        player_count = 0
+        winner = None
+        for p in self.player_list:
+            if p.in_game:
+                player_count += 1
+                winner = p
+
+        if player_count < 2:
+            print(winner.name, "has won the game.")
+            return False
+
+        else:
+            return True
+
     def initialize_board(self):
         self.board.create()
         self.tile_rents = self.board.tile_rents
@@ -102,5 +120,5 @@ for p in game.player_list:
 
 game.establish_turn_order()
 
-while game.player_turn < 30:
+while game.player_turn < 30 and game.check_game_active():
     game.take_turn()

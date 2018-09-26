@@ -33,7 +33,7 @@ def mortgage_property(player, tile, turn):
 
 def unmortgage_property(player, tile, turn):
     if player == tile.owner:
-        value = tile.mortgage_price
+        value = int(tile.mortgage_price * 1.1)
         if player.bank > value:
             print("Player", player.name, "has:", player.bank, "dollars.  Proceed to unmortgage", tile.name, "for: ",
                   value, "dollars?")
@@ -43,8 +43,7 @@ def unmortgage_property(player, tile, turn):
                     player.bank -= value
                     create_and_assign_event(tile, 'Unmortgage', turn, player, "Bank", value, value, [tile, player])
         else:
-            # player has to make money to pay.
-            return
+            print("Player", player.name, "does not have sufficient funds to unmortgage", tile.name)
 
 
 def pay_double_rr_rent(player, tile, turn):
@@ -64,7 +63,7 @@ def pay_double_rr_rent(player, tile, turn):
         print("Player", player.name, "has paid", tile.owner.name, "$", total_owed)
     else:
         print("Player", player.name, "cannot afford to pay", tile.owner.name, "$", total_owed)
-        # player has to make money to pay
+        player.increase_bank(total_owed)
     assign_event([player, tile.owner], transaction_event)
 
 
@@ -84,7 +83,7 @@ def pay_rent(player, tile, turn):
             print("Player", player.name, "has paid", tile.owner.name, "$", total_owed)
         else:
             print("Player", player.name, "cannot afford to pay", tile.owner.name, "$", total_owed)
-            # player has to make money to pay
+            player.increase_bank(total_owed)
     elif len(tile.rents) == 4:
         owned_rails = 0
         for item in tile.owner.owned_properties:
@@ -101,7 +100,7 @@ def pay_rent(player, tile, turn):
             print("Player", player.name, "has paid", tile.owner.name, "$", total_owed)
         else:
             print("Player", player.name, "cannot afford to pay", tile.owner.name, "$", total_owed)
-            # player has to make money to pay
+            player.increase_bank(total_owed)
     elif len(tile.rents) == 2:
         owned_utilities = 0
         for item in tile.owner.owned_properties:
@@ -118,7 +117,7 @@ def pay_rent(player, tile, turn):
             print("Player", player.name, "has paid", tile.owner.name, "$", total_owed)
         else:
             print("Player", player.name, "cannot afford to pay", tile.owner.name, "$", total_owed)
-            # player has to make money to pay
+            player.increase_bank(total_owed)
     assign_event([player, tile, tile.owner], transaction_event)
 
 
@@ -127,7 +126,7 @@ def pay_bank(player, amount, tile, turn):
         player.bank -= amount
         create_and_assign_event(tile, 'Pay Bank', turn, player, 'Bank', amount, amount, [player, tile])
     else:
-        # player has to make enough money to pay.
+        player.increase_bank(amount)
         return
 
 
@@ -137,11 +136,11 @@ def get_paid_from_bank(player, amount, tile, turn):
 
 
 def pay_income_tax(player, tile, turn):
-    if player.bank > 999:
-        cost = 100
+    if player.get_total_assets() > 1999:
+        cost = 200
         pay_bank(player, cost, tile, turn)
     else:
-        cost = int(player.bank * .1)
+        cost = int(player.get_total_assets()*.1)
         pay_bank(player, cost, tile, turn)
 
 
@@ -174,7 +173,7 @@ def all_players_pay(player, amount, player_list, tile, turn):
                 p.bank -= amount
                 player.bank += amount
             else:
-                # player has to make money to pay.
+                p.increase_bank(amount)
                 return
     payers = [a for a in player_list if a != player]
     assignees = [tile]

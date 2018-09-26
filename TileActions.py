@@ -57,7 +57,6 @@ def perform_action(player, tile, game):
 
 
 def community_chest_action(player, game):
-    # Implement
     card = game.cards.draw_cc_card(game)
     print(card.text)
     tile = game.board.tile_rents[str(player.position)]

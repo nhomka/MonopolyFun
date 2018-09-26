@@ -8,8 +8,13 @@ Check for error cases
 
 Done - 9/20/2018 - Code community chest cards
 Done - 9/20/2018 - Code chance cards
+The rules say that if a tile is landed on and not purchased, it should be auctioned.  Implement?
+Rules say Free Parking gives NO reward, it is just a resting place.  Include this in model.
 
+Done - 9/25/2018 - Mortgages must be repaid with 10% interest
 Done - 9/19/2018 - Handle in-jail
+Done - 9/24/2018 - Handle double rent for full set
+Done - 9/24/2018 - No rent owed if property is mortgaged
 Allow get out of jail free cards to be traded?
 
 Add new board types
