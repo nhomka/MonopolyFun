@@ -142,6 +142,7 @@ def pay_income_tax(player, tile, turn):
     else:
         cost = int(player.get_total_assets()*.1)
         pay_bank(player, cost, tile, turn)
+    return cost
 
 
 def pay_each_player(player, amount, player_list, tile, turn):

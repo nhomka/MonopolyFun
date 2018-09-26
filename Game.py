@@ -1,6 +1,6 @@
 from Dice import *
 import Board
-from TileActions import perform_action
+from TileActions import perform_action, go_to_jail_action
 from Tile import Tile
 from PreTurnActions import choose_preturn_action
 import Cards
@@ -52,12 +52,23 @@ class Game:
                                     player.turns_jailed += 1
                                     self.PS.roll_for_doubles_failure(player.name)
                     if not player.in_jail:
-                        roll = roll_for_move()
-                        player.last_roll = roll
-                        player.position = (player.position + roll) % 40
-                        self.PS.roll_info(roll, player.position, self.board.tile_dict)
-                        perform_action(player, self.tile_rents[str(player.position)], game)
-                    self.actual_turn += 1
+                        doubles = 0
+                        while 0 <= doubles < 3:
+                            roll_list = roll_for_move()
+                            if roll_list[0] == roll_list[1]:
+                                doubles += 1
+                            else:
+                                doubles = -1
+                            if doubles == 3:
+                                self.PS.go_to_jail_3_doubles(player.name)
+                                go_to_jail_action(player)
+                                break
+                            roll = sum(roll_list)
+                            player.last_roll = roll
+                            player.position = (player.position + roll) % 40
+                            self.PS.roll_info(roll, player.position, self.board.tile_dict)
+                            perform_action(player, self.tile_rents[str(player.position)], game)
+                            self.actual_turn += 1
 
         self.player_turn += 1
 
@@ -120,5 +131,5 @@ for p in game.player_list:
 
 game.establish_turn_order()
 
-while game.player_turn < 30 and game.check_game_active():
+while game.player_turn < 50 and game.check_game_active():
     game.take_turn()

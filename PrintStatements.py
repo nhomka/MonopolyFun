@@ -29,6 +29,10 @@ class PrintStatements:
             print("Rolling...")
             time.sleep(.5)
 
+    def go_to_jail_3_doubles(self, player_name):
+        if self.turned_on:
+            print(player_name, "has rolled doubles 3 times in a row and is going directly to jail.")
+
     def waited_out_jail(self, player_name):
         if self.turned_on:
             print(player_name, "has been in jail for 3 turns and is now rolling for move.")

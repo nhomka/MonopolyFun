@@ -3,7 +3,7 @@ import Player
 
 
 def roll_for_move():
-    return random.randint(1, 6) + random.randint(1, 6)
+    return [random.randint(1, 6), random.randint(1, 6)]
 
 
 def roll_for_jail():
