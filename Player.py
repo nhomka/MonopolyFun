@@ -47,6 +47,11 @@ class Player:
         self.in_jail = False
         self.turns_jailed = 0
 
+    def pay_out_of_jail(self):
+        self.bank -= 50
+        self.in_jail = False
+        self.turns_jailed = 0
+
     def get_mortgaged_properties_list(self):
         self.sort_properties()
         mortgaged_properties = [i for i in self.owned_properties if i.is_mortgaged]

@@ -39,7 +39,7 @@ class PrintStatements:
 
     def turns_jailed_ask_escape(self, player_name, turns_jailed):
         if self.turned_on:
-            print(player_name, "has been in jail for", turns_jailed, "turns.  Use escape card?")
+            print(player_name, "has been in jail for", turns_jailed, "turns.  Use escape card (C) or pay $50 (P)?")
 
     def use_get_out_of_jail_success(self, player_name):
         if self.turned_on:
@@ -48,6 +48,14 @@ class PrintStatements:
     def use_get_out_of_jail_failure(self, player_name):
         if self.turned_on:
             print(player_name, "has no get out of jail free cards and is still in jail")
+
+    def pay_out_of_jail_success(self, player_name):
+        if self.turned_on:
+            print(player_name, "has paid $50 and is leaving jail")
+
+    def pay_out_of_jail_failure(self, player_name):
+        if self.turned_on:
+            print(player_name, "does not have $50 and will not leave jail")
 
     def roll_for_doubles_success(self, player_name):
         if self.turned_on:

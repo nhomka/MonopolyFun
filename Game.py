@@ -38,13 +38,19 @@ class Game:
                             player.leave_jail()
                         else:
                             self.PS.turns_jailed_ask_escape(player.name, player.turns_jailed)
-                            if input().capitalize() == 'Y':
+                            leave_jail_input = input().capitalize()
+                            if leave_jail_input == 'C':
                                 if player.use_jail_pass():
                                     self.PS.use_get_out_of_jail_success(player.name)
                                 else:
-                                    player.turns_jailed += 1
                                     self.PS.use_get_out_of_jail_failure(player.name)
-                            else:
+                            elif leave_jail_input == 'P':
+                                if player.bank >= 50:
+                                    player.pay_out_of_jail()
+                                    self.PS.pay_out_of_jail_success(player.name)
+                                else:
+                                    self.PS.pay_out_of_jail_failure(player.name)
+                            if player.in_jail:
                                 if roll_for_jail():
                                     player.leave_jail()
                                     self.PS.roll_for_doubles_success(player.name)
