@@ -48,9 +48,10 @@ class Player:
         self.turns_jailed = 0
 
     def pay_out_of_jail(self):
-        self.bank -= 50
-        self.in_jail = False
-        self.turns_jailed = 0
+        if self.bank >= 50:
+            self.bank -= 50
+            self.in_jail = False
+            self.turns_jailed = 0
 
     def get_mortgaged_properties_list(self):
         self.sort_properties()

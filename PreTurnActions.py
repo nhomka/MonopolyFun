@@ -1,4 +1,5 @@
 import Transactions
+from Dice import roll_for_move
 
 
 def choose_preturn_action(player, player_list, turn):
@@ -143,3 +144,33 @@ def request_trade(player, player_list):
 # If a Get Out Of Jail Free card is owned by the player, use it to leave jail.
 def get_out_of_jail_free(player):
     return
+
+
+def pre_turn_jail_action(player, PS):
+    if player.turns_jailed == 3:
+        PS.waited_out_jail(player.name)
+        player.pay_out_of_jail()
+    else:
+        PS.turns_jailed_ask_escape(player.name, player.turns_jailed)
+        leave_jail_input = input().capitalize()
+        if leave_jail_input == 'C':
+            if player.use_jail_pass():
+                PS.use_get_out_of_jail_success(player.name)
+            else:
+                PS.use_get_out_of_jail_failure(player.name)
+        elif leave_jail_input == 'P':
+            if player.bank >= 50:
+                player.pay_out_of_jail()
+                PS.pay_out_of_jail_success(player.name)
+            else:
+                PS.pay_out_of_jail_failure(player.name)
+        if player.in_jail:
+            roll = roll_for_move()
+            if roll[0] == roll[1]:
+                player.leave_jail()
+                PS.roll_for_doubles_success(player.name)
+                return roll[0]+roll[1]
+            else:
+                player.turns_jailed += 1
+                PS.roll_for_doubles_failure(player.name)
+    return None

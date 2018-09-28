@@ -2,7 +2,7 @@ from Dice import *
 import Board
 from TileActions import perform_action, go_to_jail_action
 from Tile import Tile
-from PreTurnActions import choose_preturn_action
+from PreTurnActions import choose_preturn_action, pre_turn_jail_action
 import Cards
 from PrintStatements import PrintStatements as PS
 
@@ -32,43 +32,25 @@ class Game:
 
                 if input().capitalize() == "Y":
                     self.PS.rolling()
+                    jail_roll = None
                     if player.in_jail:
-                        if player.turns_jailed == 3:
-                            self.PS.waited_out_jail(player.name)
-                            player.leave_jail()
-                        else:
-                            self.PS.turns_jailed_ask_escape(player.name, player.turns_jailed)
-                            leave_jail_input = input().capitalize()
-                            if leave_jail_input == 'C':
-                                if player.use_jail_pass():
-                                    self.PS.use_get_out_of_jail_success(player.name)
-                                else:
-                                    self.PS.use_get_out_of_jail_failure(player.name)
-                            elif leave_jail_input == 'P':
-                                if player.bank >= 50:
-                                    player.pay_out_of_jail()
-                                    self.PS.pay_out_of_jail_success(player.name)
-                                else:
-                                    self.PS.pay_out_of_jail_failure(player.name)
-                            if player.in_jail:
-                                if roll_for_jail():
-                                    player.leave_jail()
-                                    self.PS.roll_for_doubles_success(player.name)
-                                else:
-                                    player.turns_jailed += 1
-                                    self.PS.roll_for_doubles_failure(player.name)
+                        jail_roll = pre_turn_jail_action(player, self.PS)
                     if not player.in_jail:
                         doubles = 0
                         while 0 <= doubles < 3:
-                            roll_list = roll_for_move()
-                            if roll_list[0] == roll_list[1]:
-                                doubles += 1
-                            else:
+                            if jail_roll:
                                 doubles = -1
-                            if doubles == 3:
-                                self.PS.go_to_jail_3_doubles(player.name)
-                                go_to_jail_action(player)
-                                break
+                                roll_list = jail_roll
+                            else:
+                                roll_list = roll_for_move()
+                                if roll_list[0] == roll_list[1]:
+                                    doubles += 1
+                                else:
+                                    doubles = -1
+                                if doubles == 3:
+                                    self.PS.go_to_jail_3_doubles(player.name)
+                                    go_to_jail_action(player)
+                                    break
                             roll = sum(roll_list)
                             player.last_roll = roll
                             player.position = (player.position + roll) % 40
