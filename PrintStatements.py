@@ -65,5 +65,7 @@ class PrintStatements:
         if self.turned_on:
             print(player_name, "remains in jail and will not roll for move.")
 
-
+    def game_won(self, player_name):
+        if self.turned_on:
+            print(player_name, "has won the game.")
 

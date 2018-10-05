@@ -1,10 +1,9 @@
-from Dice import *
 import Board
-from TileActions import perform_action, go_to_jail_action
-from Tile import Tile
-from PreTurnActions import choose_preturn_action, pre_turn_jail_action
 import Cards
+from Dice import *
+from PreTurnActions import choose_preturn_action, pre_turn_jail_action
 from PrintStatements import PrintStatements as PS
+from TileActions import perform_action, go_to_jail_action
 
 
 class Game:
@@ -91,7 +90,7 @@ class Game:
                 winner = p
 
         if player_count < 2:
-            print(winner.name, "has won the game.")
+            self.PS.game_won(winner.name)
             return False
 
         else:
