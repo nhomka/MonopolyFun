@@ -1,9 +1,11 @@
+import Auctions
 import Board
 import Cards
 from Dice import *
 from PreTurnActions import choose_preturn_action, pre_turn_jail_action
 from PrintStatements import PrintStatements as PS
 from TileActions import perform_action, go_to_jail_action
+
 
 
 class Game:
@@ -26,6 +28,12 @@ class Game:
     def take_turn(self):
         self.PS.turn_start_info(self.player_turn)
         for player in self.player_list:
+            if not player.in_game:
+                if len(player.get_properties_list() > 0):
+                    bidder_list = self.player_list
+                    bidder_list.remove(player)
+                    for space in player.owned_properties:
+                        Auctions.auction_property_from_bank(bidder_list, space, self.actual_turn)
             if player.turn == self.player_turn % len(self.player_list) and player.in_game:
                 self.pre_turn_actions(player)
 

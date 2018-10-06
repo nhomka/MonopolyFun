@@ -97,7 +97,14 @@ class Player:
         total_assets = bank + houses + mortgages
         return total_assets
 
-    def liquefy_assets(self):
+    def liquidate_all_assets(self):
+        total_bank_value = self.get_total_assets()
+        for p in self.get_properties_list():
+            p.houses = 0
+            p.is_mortgaged = True
+        self.bank = total_bank_value
+
+    def liquidate_assets(self):
         print("Mortgage ('M') or Sell Houses ('H')?")
         get_input = input().capitalize()
         if get_input == 'M':
@@ -129,5 +136,5 @@ class Player:
             print(self.name, "is now out of the game")
         else:
             while self.bank < owed_money:
-                self.liquefy_assets()
+                self.liquidate_assets()
 

@@ -1,4 +1,5 @@
 from TransactionEvent import TransactionEvent, create_and_assign_event, assign_event
+import Auctions
 
 
 def buy_property(player, tile, turn):
@@ -127,7 +128,12 @@ def pay_bank(player, amount, tile, turn):
         create_and_assign_event(tile, 'Pay Bank', turn, player, 'Bank', amount, amount, [player, tile])
     else:
         player.increase_bank(amount)
-        return
+        if player.in_game:
+            player.bank -= amount
+            create_and_assign_event(tile, 'Pay Bank', turn, player, 'Bank', amount, amount, [player, tile])
+        else:
+            player.liquidate_all_assets()
+            player.bank = 0
 
 
 def get_paid_from_bank(player, amount, tile, turn):
@@ -208,3 +214,15 @@ def pay_chance_house_tax(player, tile, turn):
     total_owed = house_count * 25 + hotel_count * 100
     pay_bank(player, total_owed, tile, turn)
     print(player.name, "has paid the bank", total_owed)
+
+def transfer_assets_to_player(giver, receiver):
+    for item in giver.owned_properties:
+        giver.owned_properties.remove(item)
+        receiver.owned_properties.append(item)
+    bank_value = giver.bank
+    giver.bank = 0
+    receiver.bank += bank_value
+    if giver.jail_passes >= 1:
+        jail_passes_count = giver.jail_passes
+        giver.jail_passes = 0
+        receiver.jail_passes += jail_passes_count

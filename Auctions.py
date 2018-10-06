@@ -18,11 +18,13 @@ def auction_property_from_bank(bidder_list, tile, turn):
                         print(p.name, "cannot afford the bidding price and is out of the auction")
                         bidder_list.remove(p)
                 else:
+                    print(p.name, "has declined to raise the bid and is out of the auction")
                     bidder_list.remove(p)
             else:
-                if highest_bidder:
-                    print(tile.name, "has been auctioned to", highest_bidder.name, "for $", purchase_price)
-                    tile.owner = highest_bidder
-                    Transactions.pay_bank(highest_bidder, purchase_price, tile, turn)
-                else:
-                    print("Nobody has bid on the tile and it has gone unsold")
+                break
+    if highest_bidder:
+        print(tile.name, "has been auctioned to", highest_bidder.name, "for $", purchase_price)
+        tile.owner = highest_bidder
+        Transactions.pay_bank(highest_bidder, purchase_price, tile, turn)
+    else:
+        print("Nobody has bid on the tile and it has gone unsold")
