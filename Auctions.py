@@ -2,12 +2,13 @@ import Transactions
 
 
 def auction_property_from_bank(bidder_list, tile, turn):
+    local_bidder_list = bidder_list
     bidding_price = tile.purchase_price
     highest_bidder = None
     purchase_price = None
-    while len(bidder_list) > 1:
-        for p in bidder_list:
-            if len(bidder_list) > 1:
+    while len(local_bidder_list) > 1:
+        for p in local_bidder_list:
+            if len(local_bidder_list) > 1:
                 print(p.name, "would you like to bid on", tile.name, "for $", bidding_price)
                 if input().capitalize() == "Y":
                     if p.bank > bidding_price:
@@ -16,10 +17,10 @@ def auction_property_from_bank(bidder_list, tile, turn):
                         bidding_price += 10
                     else:
                         print(p.name, "cannot afford the bidding price and is out of the auction")
-                        bidder_list.remove(p)
+                        local_bidder_list.remove(p)
                 else:
                     print(p.name, "has declined to raise the bid and is out of the auction")
-                    bidder_list.remove(p)
+                    local_bidder_list.remove(p)
             else:
                 break
     if highest_bidder:

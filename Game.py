@@ -33,6 +33,7 @@ class Game:
                     bidder_list = self.player_list
                     bidder_list.remove(player)
                     for space in player.owned_properties:
+                        player.owned_properties.remove(space)
                         Auctions.auction_property_from_bank(bidder_list, space, self.actual_turn)
             if player.turn == self.player_turn % len(self.player_list) and player.in_game:
                 self.pre_turn_actions(player)
